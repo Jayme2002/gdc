@@ -37,16 +37,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
             
             // Update the document title with GPT's answer
             const titleInput = document.querySelector('.docs-title-input');
-            titleInput.value = data.answer;
+            if (data.error) {
+                titleInput.value = `Error: ${data.error}`;
+            } else {
+                titleInput.value = data.answer;
+            }
             
         } catch (error) {
             console.error('Error:', error);
             const titleInput = document.querySelector('.docs-title-input');
-            titleInput.value = 'Error processing image';
+            titleInput.value = `Error: ${error.message}`;
         }
     });
 });

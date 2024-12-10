@@ -6,14 +6,17 @@
         "use": "@vercel/node"
       },
       {
-        "src": "public/**",
+        "src": "public/**/*",
         "use": "@vercel/static"
       }
     ],
     "routes": [
       {
         "src": "/api/(.*)",
-        "dest": "/api/$1"
+        "dest": "/api/$1.ts"
+      },
+      {
+        "handle": "filesystem"
       },
       {
         "src": "/(.*)",

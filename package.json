@@ -10,18 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@vercel/node": "^3.2.29",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
+    "@vercel/node": "^3.0.0",
     "openai": "^4.0.0",
-    "typescript": "^4.9.5"
+    "multer": "^1.4.5-lts.1",
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.17",
+    "@types/multer": "^1.4.7",
     "@types/node": "^18.15.11",
-    "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1"
+    "typescript": "^4.9.5"
   }
 }
