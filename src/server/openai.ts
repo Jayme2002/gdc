@@ -6,9 +6,7 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Debug logging
-console.log('Current directory:', __dirname);
-console.log('ENV File Path:', path.resolve(__dirname, '../../.env'));
-console.log('API Key exists:', !!process.env.OPENAI_API_KEY);
+
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || '' // Provide a default empty string to prevent undefined
