@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Docs</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="docs-container">
+        <div class="docs-header">
+            <div class="header-left">
+                <img src="https://www.gstatic.com/images/branding/product/1x/docs_2020q4_48dp.png" alt="Docs" class="docs-logo">
+                <div class="docs-title-section">
+                    <input type="text" placeholder="Untitled document" class="docs-title-input">
+                    <div class="docs-menu-bar">
+                        <span class="menu-item">File</span>
+                        <span class="menu-item">Edit</span>
+                        <span class="menu-item">View</span>
+                        <span class="menu-item" id="insert-button">Insert</span>
+                        <span class="menu-item">Format</span>
+                        <span class="menu-item">Tools</span>
+                        <span class="menu-item">Extensions</span>
+                        <span class="menu-item">Help</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="share-button">Share</button>
+                <span class="material-icons">account_circle</span>
+            </div>
+        </div>
+        
+        <div class="docs-toolbar">
+            <div class="toolbar-section">
+                <span class="material-icons toolbar-icon">undo</span>
+                <span class="material-icons toolbar-icon">redo</span>
+                <span class="material-icons toolbar-icon">print</span>
+                <span class="material-icons toolbar-icon">spellcheck</span>
+                <span class="material-icons toolbar-icon">format_paint</span>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-section">
+                <select class="style-select">
+                    <option>Normal text</option>
+                    <option>Title</option>
+                    <option>Heading 1</option>
+                    <option>Heading 2</option>
+                </select>
+                <select class="font-select">
+                    <option>Arial</option>
+                    <option>Times New Roman</option>
+                    <option>Courier New</option>
+                </select>
+                <select class="font-size-select">
+                    <option>8</option>
+                    <option>10</option>
+                    <option>12</option>
+                    <option>14</option>
+                    <option selected>11</option>
+                </select>
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-section">
+                <span class="material-icons toolbar-icon" id="answer-a">format_bold</span>
+                <span class="material-icons toolbar-icon" id="answer-b">format_italic</span>
+                <span class="material-icons toolbar-icon" id="answer-c">format_underlined</span>
+                <span class="material-icons toolbar-icon" id="answer-d">format_color_text</span>
+                <span class="material-icons toolbar-icon" id="answer-e">format_color_fill</span>
+            </div>
+        </div>
+
+        <div class="docs-editor">
+            <div id="editor" contenteditable="true"></div>
+            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+        </div>
+        <div id="gpt-response" class="gpt-response"></div>
+    </div>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
