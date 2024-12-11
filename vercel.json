@@ -12,6 +12,14 @@
     ],
     "routes": [
       {
+        "src": "/webhook",
+        "dest": "/api/webhook.ts"
+      },
+      {
+        "src": "/create-checkout-session",
+        "dest": "/api/create-checkout-session.ts"
+      },
+      {
         "src": "/api/(.*)",
         "dest": "/api/$1.ts"
       },
