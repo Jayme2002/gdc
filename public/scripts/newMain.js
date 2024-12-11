@@ -142,6 +142,9 @@ upgradeButton.addEventListener('click', async (e) => {
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+                userId: auth.currentUser.uid
+            })
         });
         
         if (!response.ok) {

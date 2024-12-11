@@ -20,33 +20,5 @@
             </button>
         </div>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBr4NT9Dp2UrvTvoaeBr02HkFe-t9IYsPo",
-            authDomain: "gdclone-8fc16.firebaseapp.com",
-            projectId: "gdclone-8fc16",
-            storageBucket: "gdclone-8fc16.firebasestorage.app",
-            messagingSenderId: "944013008902",
-            appId: "1:944013008902:web:66d378e0e125897a0e6387",
-            measurementId: "G-523K7DY9SW"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                const userRef = doc(db, 'users', user.uid);
-                await updateDoc(userRef, {
-                    isUpgraded: true
-                });
-            }
-        });
-    </script>
 </body>
 </html>

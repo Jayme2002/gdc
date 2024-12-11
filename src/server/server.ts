@@ -1,10 +1,15 @@
-import express from 'express';
+import express, { Request, Response, RequestHandler } from 'express';
 import cors from 'cors';
 import path from 'path';
 import multer from 'multer';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import Stripe from 'stripe';
+import rawBody from 'raw-body';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 
 dotenv.config();
 
@@ -15,23 +20,84 @@ const openai = new OpenAI({
 
 // Initialize Stripe with secret key from env
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2023-10-16'
+    apiVersion: '2024-06-20'
 });
 
 const app = express();
 const port = process.env.PORT || 3000;
 const upload = multer();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
+// Define proper interfaces
+interface StripeWebhookRequest extends Omit<Request, 'body'> {
+    body: Buffer;
+    rawBody?: Buffer;
+}
 
-// Add this new endpoint for image analysis
-app.post('/api/analyze-image', upload.single('image'), async (req, res) => {
+interface CheckoutRequest extends Request {
+    body: {
+        userId: string;
+    };
+}
+
+interface ImageAnalysisRequest extends Request {
+    file?: Express.Multer.File;
+}
+
+// Type the handlers properly
+const handleWebhook: RequestHandler = async (
+    req: Request & StripeWebhookRequest, 
+    res: Response
+): Promise<void> => {
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    if (!endpointSecret) {
+        res.status(400).send('Webhook secret not configured');
+        return;
+    }
+
+    try {
+        const sig = req.headers['stripe-signature'];
+        const payload = await rawBody(req);
+
+        if (!sig || !payload) {
+            res.status(400).send('Missing signature or payload');
+            return;
+        }
+
+        const event = stripe.webhooks.constructEvent(payload.toString(), sig, endpointSecret);
+
+        switch (event.type) {
+            case 'checkout.session.completed':
+                const session = event.data.object as Stripe.Checkout.Session;
+                const userId = session.client_reference_id;
+
+                if (userId) {
+                    const userRef = doc(db, 'users', userId);
+                    await updateDoc(userRef, {
+                        isUpgraded: true,
+                        subscriptionStatus: 'active',
+                        subscriptionDate: new Date().toISOString(),
+                        subscriptionId: session.subscription
+                    });
+                }
+                break;
+        }
+
+        res.json({ received: true });
+    } catch (err: unknown) {
+        console.error('Webhook Error:', err);
+        res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
+};
+
+const handleImageAnalysis: RequestHandler = async (
+    req: Request & ImageAnalysisRequest, 
+    res: Response
+): Promise<void> => {
     try {
         if (!req.file) {
-            return res.status(400).json({ error: 'No image provided' });
+            res.status(400).json({ error: 'No image provided' });
+            return;
         }
 
         // Convert image to base64
@@ -63,21 +129,41 @@ app.post('/api/analyze-image', upload.single('image'), async (req, res) => {
         // Add proper null checking
         const answer = response.choices[0]?.message?.content;
         if (!answer) {
-            return res.status(500).json({ error: 'No answer received from OpenAI' });
+            res.status(500).json({ error: 'No answer received from OpenAI' });
+            return;
         }
 
         res.json({ answer: answer.trim() });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Failed to analyze image' });
+    } catch (err) {
+        console.error('Image Analysis Error:', err);
+        res.status(500).json({ error: 'Image analysis failed' });
     }
-});
+};
+
+// Use the handlers in routes
+app.post(
+    '/webhook', 
+    express.raw({type: 'application/json'}), 
+    handleWebhook
+);
+
+app.post(
+    '/api/analyze-image', 
+    upload.single('image'), 
+    handleImageAnalysis
+);
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
 
 // Add this endpoint to your server
-app.post('/create-checkout-session', async (req, res) => {
+app.post('/create-checkout-session', async (req: CheckoutRequest, res: Response) => {
     try {
+        const { userId } = req.body;
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
+            client_reference_id: userId,
             line_items: [
                 {
                     price_data: {
