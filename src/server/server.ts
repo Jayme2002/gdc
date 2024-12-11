@@ -4,12 +4,18 @@ import path from 'path';
 import multer from 'multer';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import Stripe from 'stripe';
 
 dotenv.config();
 
 // Initialize OpenAI
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
+});
+
+// Initialize Stripe with secret key from env
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2023-10-16'
 });
 
 const app = express();
@@ -67,6 +73,39 @@ app.post('/api/analyze-image', upload.single('image'), async (req, res) => {
     }
 });
 
+// Add this endpoint to your server
+app.post('/create-checkout-session', async (req, res) => {
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: 'Premium Subscription',
+                            description: 'Access to premium features',
+                        },
+                        unit_amount: 999, // $9.99 in cents
+                        recurring: {
+                            interval: 'month',
+                        },
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: 'subscription',
+            success_url: `${req.protocol}://${req.get('host')}/success.html`,
+            cancel_url: `${req.protocol}://${req.get('host')}/main.html`,
+        });
+
+        res.json({ url: session.url });
+    } catch (error: any) {
+        console.error('Stripe error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // For all other routes, serve the index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../../public/index.html'));
@@ -74,3 +113,10 @@ app.get('*', (req, res) => {
 
 // Instead, export your app
 export default app;
+
+// Add this if not running on Vercel
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
+}
