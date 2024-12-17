@@ -16,7 +16,7 @@
                 <div class="docs-title-section">
                     <input type="text" placeholder="Untitled document" class="docs-title-input">
                     <div class="docs-menu-bar">
-                        <span class="menu-item">File</span>
+                        <span class="menu-item" id="file-button">File</span>
                         <span class="menu-item">Edit</span>
                         <span class="menu-item">View</span>
                         <span class="menu-item" id="insert-button">Insert</span>
@@ -88,6 +88,14 @@
         <div class="docs-editor">
             <div id="editor" contenteditable="true"></div>
             <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+        </div>
+
+        <div id="notesPage">
+            <!-- Your existing notes content -->
+        </div>
+
+        <div id="outputPage" style="display: none;">
+            <!-- ChatGPT's output content -->
         </div>
     </div>
     <script type="module" src="scripts/newMain.js"></script>

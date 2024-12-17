@@ -107,10 +107,7 @@ const handleImageAnalysis: RequestHandler = async (
         const response = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
-                {
-                    role: "system",
-                    content: "You are analyzing multiple choice questions. Only respond with the letters necessary to answer the question. Some Questions might have one correct answer while others might have multiple. Analyze the image and determine which A,B,C,D,E is correct ."
-                },
+                
                 {
                     role: "user",
                     content: [
@@ -123,7 +120,7 @@ const handleImageAnalysis: RequestHandler = async (
                     ]
                 }
             ],
-            max_tokens: 8
+            max_tokens: 1000
         });
 
         // Add proper null checking

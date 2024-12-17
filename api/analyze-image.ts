@@ -61,10 +61,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const response = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
-                {
-                    role: "system",
-                    content: "You are analyzing multiple choice questions. Only respond with the letters necessary to answer the question. Some Questions might have one correct answer while others might have multiple. Analyze the image and determine which A,B,C,D,E is correct."
-                },
+                
                 {
                     role: "user",
                     content: [
@@ -78,7 +75,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     ]
                 }
             ],
-            max_tokens: 8
+            max_tokens: 1000
         });
 
         const answer = response.choices[0]?.message?.content;
