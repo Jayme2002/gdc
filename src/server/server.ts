@@ -107,7 +107,10 @@ const handleImageAnalysis: RequestHandler = async (
         const response = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
-                
+                {
+                    role: "system",
+                    content: "Format your response using HTML tags for better readability. Use <p> for paragraphs, <h1>, <h2>, <h3> for headings, <ul> and <li> for lists, and <strong> or <em> for emphasis where appropriate."
+                },
                 {
                     role: "user",
                     content: [
@@ -178,7 +181,7 @@ app.post('/create-checkout-session', async (req: CheckoutRequest, res: Response)
                 },
             ],
             mode: 'subscription',
-            success_url: `${req.protocol}://${req.get('host')}/success.html`,
+            success_url: `${req.protocol}://${req.get('host')}/main.html?payment=success`,
             cancel_url: `${req.protocol}://${req.get('host')}/main.html`,
         });
 
@@ -188,6 +191,8 @@ app.post('/create-checkout-session', async (req: CheckoutRequest, res: Response)
         res.status(500).json({ error: error.message });
     }
 });
+
+
 
 // For all other routes, serve the index.html
 app.get('*', (req, res) => {

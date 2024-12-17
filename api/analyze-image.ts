@@ -3,6 +3,11 @@ import OpenAI from 'openai';
 import multer from 'multer';
 import { Buffer } from 'buffer';
 
+// Add interface for the multer-augmented request
+interface MulterRequest extends VercelRequest {
+    file?: Express.Multer.File;
+}
+
 // Initialize OpenAI
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -28,7 +33,7 @@ export const config = {
     },
 };
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: MulterRequest, res: VercelResponse) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,25 +55,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
         await runMiddleware(req, res, upload.single('image'));
         
-        // @ts-ignore - req.file is added by multer
         if (!req.file) {
             return res.status(400).json({ error: 'No image provided' });
         }
 
-        // @ts-ignore - req.file is added by multer
         const base64Image = req.file.buffer.toString('base64');
 
         const response = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
-                
+                {
+                    role: "system",
+                    content: "Format your response using HTML tags for better readability. Use <p> for paragraphs, <h1>, <h2>, <h3> for headings, <ul> and <li> for lists, and <strong> or <em> for emphasis where appropriate."
+                },
                 {
                     role: "user",
                     content: [
                         {
                             type: "image_url",
                             image_url: {
-                                // @ts-ignore - req.file is added by multer
                                 url: `data:${req.file.mimetype};base64,${base64Image}`
                             }
                         }

@@ -32,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${req.headers.origin}/success.html`,
+            success_url: `${req.headers.origin}/main.html?payment=success`,
             cancel_url: `${req.headers.origin}/main.html`,
         });
 

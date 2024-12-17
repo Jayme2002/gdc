@@ -1,3 +1,20 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBr4NT9Dp2UrvTvoaeBr02HkFe-t9IYsPo",
+    authDomain: "gdclone-8fc16.firebaseapp.com",
+    projectId: "gdclone-8fc16",
+    storageBucket: "gdclone-8fc16.firebasestorage.app",
+    messagingSenderId: "944013008902",
+    appId: "1:944013008902:web:66d378e0e125897a0e6387",
+    measurementId: "G-523K7DY9SW"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 let userNotes = '';
 let gptOutput = '';
 let showingGptOutput = false;
@@ -8,13 +25,13 @@ document.getElementById('file-button').addEventListener('click', function() {
   
   if (!showingGptOutput) {
     // Save current notes and switch to GPT output
-    userNotes = editor.textContent;
-    editor.textContent = gptOutput || outputPage.textContent;
+    userNotes = editor.innerHTML;
+    editor.innerHTML = gptOutput || outputPage.innerHTML;
     showingGptOutput = true;
   } else {
     // Save GPT output and switch back to notes
-    gptOutput = editor.textContent;
-    editor.textContent = userNotes;
+    gptOutput = editor.innerHTML;
+    editor.innerHTML = userNotes;
     showingGptOutput = false;
   }
 });
@@ -41,11 +58,11 @@ document.getElementById('imageUpload').addEventListener('change', async function
       if (data.answer) {
         // Store GPT's response
         gptOutput = data.answer;
-        document.getElementById('outputPage').textContent = data.answer;
+        document.getElementById('outputPage').innerHTML = data.answer;
         
         // If we're currently showing output, update the editor content
         if (showingGptOutput) {
-          editor.textContent = data.answer;
+          editor.innerHTML = data.answer;
         }
       }
     } catch (error) {
@@ -53,3 +70,64 @@ document.getElementById('imageUpload').addEventListener('change', async function
     }
   }
 });
+
+// Profile dropdown functionality
+const profileContainer = document.querySelector('.profile-container');
+const profileDropdown = document.querySelector('.profile-dropdown');
+
+profileContainer.addEventListener('click', function(e) {
+    e.stopPropagation();
+    profileDropdown.classList.toggle('show');
+});
+
+document.addEventListener('click', function() {
+    profileDropdown.classList.remove('show');
+});
+
+// Stripe checkout handler
+document.getElementById('upgrade-button').addEventListener('click', async function() {
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        
+        if (!user) {
+            window.location.href = '/signin.html';
+            return;
+        }
+
+        const response = await fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: user.uid
+            })
+        });
+        
+        const { url } = await response.json();
+        window.location.href = url;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+// Add this function at the top level
+function showToast(message) {
+    const toast = document.getElementById('successToast');
+    if (toast) {
+        toast.textContent = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+}
+
+// Check for payment success parameter
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('payment') === 'success') {
+    showToast('Successfully upgraded to pro! 🎉');
+    // Remove the query parameter
+    window.history.replaceState({}, '', '/main.html');
+}
