@@ -131,3 +131,66 @@ if (urlParams.get('payment') === 'success') {
     // Remove the query parameter
     window.history.replaceState({}, '', '/main.html');
 }
+
+// Add this after the upgrade-button event listener
+document.getElementById('settings-button').addEventListener('click', function() {
+    window.location.href = '/settings.html';
+});
+
+// Add this after the upgrade-button event listener
+document.getElementById('manage-subscription').addEventListener('click', async function() {
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        
+        if (!user) {
+            window.location.href = '/signin.html';
+            return;
+        }
+
+        const response = await fetch('/api/create-portal-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: user.uid
+            })
+        });
+        
+        const { url } = await response.json();
+        window.location.href = url;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+// Add this after the upgrade-button event listener
+document.getElementById('manage-subscription-button').addEventListener('click', async function() {
+    try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        
+        if (!user) {
+            window.location.href = '/signin.html';
+            return;
+        }
+
+        const response = await fetch('/api/create-portal-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: user.uid
+            })
+        });
+        
+        const { url } = await response.json();
+        if (url) {
+            window.location.href = url;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});

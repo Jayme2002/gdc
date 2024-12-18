@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancel Subscription - Study Smarter Not Harder</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="styles/settings.css">
+</head>
+<body>
+    <div class="settings-container">
+        <div class="settings-header">
+            <a href="/settings.html" class="back-button">
+                <span class="material-icons">arrow_back</span>
+            </a>
+            <h1>Cancel Subscription</h1>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-section">
+                <h2>Subscription Details</h2>
+                <div id="subscription-info" class="subscription-details">
+                    Loading subscription details...
+                </div>
+                <div class="confirmation-box">
+                    <h3>Are you sure you want to cancel?</h3>
+                    <p>You'll continue to have access to pro features until your current billing period ends.</p>
+                    <div class="button-group">
+                        <button id="confirm-cancel" class="danger-button">
+                            <span class="material-icons">cancel</span>
+                            Yes, Cancel Subscription
+                        </button>
+                        <button id="keep-subscription" class="secondary-button">
+                            <span class="material-icons">check_circle</span>
+                            Keep My Subscription
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="scripts/cancel-subscription.js"></script>
+</body>
+</html>

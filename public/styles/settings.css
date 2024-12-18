@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    font-family: 'Google Sans', Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.settings-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.back-button {
+    color: #5f6368;
+    text-decoration: none;
+}
+
+.settings-header h1 {
+    margin: 0;
+    color: #202124;
+    font-size: 24px;
+}
+
+.settings-section {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.settings-section h2 {
+    margin: 0 0 16px 0;
+    color: #202124;
+    font-size: 18px;
+}
+
+.primary-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.primary-button:hover {
+    background-color: #1557b0;
+}
+
+.material-icons {
+    font-size: 20px;
+}
+
+.message {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    display: none;
+}
+
+.message.success {
+    background-color: #e6f4ea;
+    color: #1e4620;
+    border: 1px solid #b7dfb9;
+}
+
+.primary-button:disabled {
+    background-color: #dadce0;
+    cursor: not-allowed;
+}
+
+.subscription-details {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.confirmation-box {
+    border: 1px solid #dadce0;
+    padding: 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+}
+
+.button-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.danger-button {
+    background-color: #dc3545;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.secondary-button {
+    background-color: #f8f9fa;
+    color: #3c4043;
+    padding: 12px 24px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.danger-button:hover {
+    background-color: #c82333;
+}
+
+.secondary-button:hover {
+    background-color: #e9ecef;
+}
